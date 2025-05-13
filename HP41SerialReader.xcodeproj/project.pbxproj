@@ -262,17 +262,18 @@
 				CODE_SIGN_ENTITLEMENTS = HP41SerialReader/HP41SerialReader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3.1.0;
 				DEVELOPMENT_TEAM = 8KW4KF38JB;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "©️ 2025 Jeff Rosengarden - All Rights Reserved";
+				"INFOPLIST_KEY_NSHumanReadableCopyright[sdk=*]" = "©️ 2025 Jeff Rosengarden - All Rights Reserved";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rosengarden.HP41SerialReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -289,17 +290,18 @@
 				CODE_SIGN_ENTITLEMENTS = HP41SerialReader/HP41SerialReader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3.1.0;
 				DEVELOPMENT_TEAM = 8KW4KF38JB;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "©️ 2025 Jeff Rosengarden - All Rights Reserved";
+				"INFOPLIST_KEY_NSHumanReadableCopyright[sdk=*]" = "©️ 2025 Jeff Rosengarden - All Rights Reserved";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rosengarden.HP41SerialReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;

@@ -2,6 +2,34 @@
 import SwiftUI
 import ORSSerial
 
+struct MyGreatAppApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+        .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("About MyGreatApp") {
+                    NSApplication.shared.orderFrontStandardAboutPanel(
+                        options: [
+                            NSApplication.AboutPanelOptionKey.credits: NSAttributedString(
+                                string: "Some custom info about my app.",
+                                attributes: [
+                                    NSAttributedString.Key.font: NSFont.boldSystemFont(
+                                        ofSize: NSFont.smallSystemFontSize)
+                                ]
+                            ),
+                            NSApplication.AboutPanelOptionKey(
+                                rawValue: "Copyright"
+                            ): "© 2020 NATALIA PANFEROVA"
+                        ]
+                    )
+                }
+            }
+        }
+    }
+}
+
 struct ContentView: View {
     @StateObject private var serialManager = SerialPortManager()
     
@@ -200,4 +228,3 @@ struct WindowAccessor: NSViewRepresentable {
 
     func updateNSView(_ nsView: NSView, context: Context) {}
 }
-
