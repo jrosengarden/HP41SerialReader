@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		885800522DD272C8001DB716 /* ORSSerial in Frameworks */ = {isa = PBXBuildFile; productRef = 885800512DD272C8001DB716 /* ORSSerial */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		885800412DD27268001DB716 /* HP41SerialReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HP41SerialReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				885800522DD272C8001DB716 /* ORSSerial in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = HP41SerialReader;
 			packageProductDependencies = (
+				885800512DD272C8001DB716 /* ORSSerial */,
 			);
 			productName = HP41SerialReader;
 			productReference = 885800412DD27268001DB716 /* HP41SerialReader.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 885800382DD27268001DB716;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				885800502DD272C8001DB716 /* XCRemoteSwiftPackageReference "ORSSerialPort" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 885800422DD27268001DB716 /* Products */;
 			projectDirPath = "";
@@ -321,6 +330,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		885800502DD272C8001DB716 /* XCRemoteSwiftPackageReference "ORSSerialPort" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/armadsen/ORSSerialPort";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		885800512DD272C8001DB716 /* ORSSerial */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 885800502DD272C8001DB716 /* XCRemoteSwiftPackageReference "ORSSerialPort" */;
+			productName = ORSSerial;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 885800392DD27268001DB716 /* Project object */;
 }

@@ -12,6 +12,7 @@ struct HP41SerialReaderApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .background(WindowAccessor()) 
         }
     }
 }
