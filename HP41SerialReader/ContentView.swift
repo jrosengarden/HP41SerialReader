@@ -106,7 +106,7 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity) // ← allow ScrollView to expand
             .background(Color(NSColor.controlBackgroundColor))
             
-            // HStack for "Clear" and "Copy Data" buttons
+            // HStack for all UI buttons
             HStack {
                 Button("Clear") {
                     serialManager.receivedData = ""  // Clear the received data
@@ -159,14 +159,13 @@ struct ContentView: View {
           let ports = ORSSerialPortManager.shared().availablePorts
           availablePorts = ports
 
-          // Try to preserve the selected port, or fallback
-          if let currentPath = selectedPort?.path,
-             let stillAvailable = ports.first(where: { $0.path == currentPath }) {
-              selectedPort = stillAvailable  // Keep the currently selected port if it still exists
-          } else if let defaultPort = ports.first(where: { $0.path == "/dev/cu.usbserial-0030314" }) {
-              selectedPort = defaultPort  // Set the default port if found
+          // After rescan try to set the default port to /dev/cu.usbserial-00301314"
+          // if it isn't available then just select the 1st available port
+          // as the default and let the user change it as needed.
+          if let defaultPort = ports.first(where: { $0.path == "/dev/cu.usbserial-00301314" }) {
+              self.selectedPort = defaultPort
           } else {
-              selectedPort = ports.first  // Fall back to the first available port
+              self.selectedPort = ports.first // fallback to the first available port
           }
 
           print("🔄 Rescanned ports. Found: \(ports.map(\.path))")
