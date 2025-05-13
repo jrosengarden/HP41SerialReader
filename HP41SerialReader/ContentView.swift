@@ -1,34 +1,7 @@
 
 import SwiftUI
 import ORSSerial
-
-struct MyGreatAppApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .commands {
-            CommandGroup(replacing: .appInfo) {
-                Button("About MyGreatApp") {
-                    NSApplication.shared.orderFrontStandardAboutPanel(
-                        options: [
-                            NSApplication.AboutPanelOptionKey.credits: NSAttributedString(
-                                string: "Some custom info about my app.",
-                                attributes: [
-                                    NSAttributedString.Key.font: NSFont.boldSystemFont(
-                                        ofSize: NSFont.smallSystemFontSize)
-                                ]
-                            ),
-                            NSApplication.AboutPanelOptionKey(
-                                rawValue: "Copyright"
-                            ): "© 2020 NATALIA PANFEROVA"
-                        ]
-                    )
-                }
-            }
-        }
-    }
-}
+import PDFKit
 
 struct ContentView: View {
     @StateObject private var serialManager = SerialPortManager()
@@ -36,13 +9,16 @@ struct ContentView: View {
     @State private var availablePorts: [ORSSerialPort] = []
     @State private var selectedPort: ORSSerialPort? = nil
 
+    // set State & other comm variables and give them default values
     @State private var baudRate: String = "115200"
     @State private var stopBits: Int = 1
     @State private var dataBits: Int = 8
     @State private var paritySelection: String = "None"
 
+    // set standard parity options for UI picker
     let parityOptions = ["None", "Even", "Odd"]
     
+    // set standard baud rates for UI picker
     let commonBaudRates = [
         300, 1200, 2400, 4800, 9600,
         14400, 19200, 38400, 57600,
@@ -54,7 +30,7 @@ struct ContentView: View {
             Text("Serial Port Configuration:")
                 .font(.headline)
             
-            
+            // Picker to select serial port
             Picker("Serial Port", selection: $selectedPort) {
                 ForEach(availablePorts, id: \.self) { port in
                     Text("\(port.name) (\(port.path))").tag(port as ORSSerialPort?)
@@ -63,6 +39,7 @@ struct ContentView: View {
             .pickerStyle(MenuPickerStyle())
             
             HStack {
+                // Picker to select baud rate
                 Picker("Baud Rate", selection: $baudRate) {
                     ForEach(commonBaudRates, id: \.self) { rate in
                         Text("\(rate)").tag(String(rate))
@@ -71,6 +48,7 @@ struct ContentView: View {
                 .pickerStyle(MenuPickerStyle())
             }
             
+            // Picker to select stop bits
             Picker("Stop Bits", selection: $stopBits) {
                 ForEach([1, 2], id: \.self) {
                     Text("\($0)")
@@ -78,6 +56,7 @@ struct ContentView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             
+            // Picker to select data bits
             Picker("Data Bits", selection: $dataBits) {
                 ForEach([5, 6, 7, 8], id: \.self) {
                     Text("\($0)")
@@ -85,6 +64,7 @@ struct ContentView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             
+            // Picker to select parity
             Picker("Parity", selection: $paritySelection) {
                 ForEach(parityOptions, id: \.self) {
                     Text($0)
@@ -92,6 +72,7 @@ struct ContentView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             
+            // "Connect" button to start communications w/HP41
             Button("Connect") {
                 guard let port = selectedPort,
                       let baud = Int(baudRate)
@@ -108,6 +89,7 @@ struct ContentView: View {
                     }
                 }()
                 
+                // actual comm connection construct
                 serialManager.connect(
                     portPath: port.path,
                     baudRate: baud,
@@ -120,6 +102,7 @@ struct ContentView: View {
             
             Divider().padding(.vertical, 10)
             
+            // Set up "Received Data" scrollview box
             Text("Received Data:")
                 .font(.headline)
             
@@ -134,6 +117,8 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity) // ← allow ScrollView to expand
             .background(Color(NSColor.controlBackgroundColor))
             
+            
+            // Setup all buttons in one HStack at bottom of app window
             // HStack for all UI buttons
             HStack {
                 Button("Clear") {
@@ -165,6 +150,7 @@ struct ContentView: View {
         }
         .padding()
         .onAppear {
+            // Scan system for all available serial ports
             let ports = ORSSerialPortManager.shared().availablePorts
             self.availablePorts = ports
 
@@ -182,6 +168,12 @@ struct ContentView: View {
     }
     
     // Rescan the serial ports
+    // This function will help the user identify the comm port they are using
+    // If they look at the drop down BEFORE plugging in their HP41 via
+    // Diego Diaz's USB-41 interface and then look at the drop down AFTER
+    // plugging in the USB-41 interface they should be able to see the port
+    // that has been added (or dropped off...depending on what order they do this)
+    // This is the ENTIRE purpose of the "Rescan Ports" button
       @MainActor
       private func rescanPorts() {
           let ports = ORSSerialPortManager.shared().availablePorts
@@ -209,17 +201,18 @@ struct ContentView: View {
     // Function to close the serial port and quit the app
     private func quitApp() {
         // Ensure the serial port is disconnected before quitting
-        serialManager.disconnect() // This should now work since disconnect is a valid method in SerialPortManager
+        serialManager.disconnect() 
         NSApplication.shared.terminate(nil) // Terminate the app
     }
 }
 
+// struct to set window width & height
 struct WindowAccessor: NSViewRepresentable {
     func makeNSView(context: Context) -> NSView {
         let view = NSView()
         DispatchQueue.main.async {
             if let window = view.window {
-                window.setContentSize(NSSize(width: 500, height: 800)) // Set your desired window size
+                window.setContentSize(NSSize(width: 500, height: 800))
                 window.minSize = NSSize(width: 500, height: 800)
             }
         }
@@ -228,3 +221,106 @@ struct WindowAccessor: NSViewRepresentable {
 
     func updateNSView(_ nsView: NSView, context: Context) {}
 }
+
+
+struct HelpTextView: View {
+    let helpText: String
+
+    var body: some View {
+        ScrollView {
+            Text(helpText)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(minWidth: 400, minHeight: 300)
+    }
+}
+/*
+func loadHelpText() -> String {
+    guard let url = Bundle.main.url(forResource: "Read_Me_1st", withExtension: "pdf"),
+          let pdfDocument = PDFDocument(url: url) else {
+        return "Help file not found or unable to open PDF."
+    }
+
+    var fullText = ""
+    for pageIndex in 0..<pdfDocument.pageCount {
+        if let page = pdfDocument.page(at: pageIndex),
+           let pageContent = page.string {
+            fullText += pageContent + "\n"
+        }
+    }
+
+    return fullText.isEmpty ? "PDF is empty or could not extract text." : fullText
+}
+*/
+func loadHelpDocument() -> PDFDocument? {
+    guard let url = Bundle.main.url(forResource: "Read_Me_1st", withExtension: "pdf"),
+          let pdfDocument = PDFDocument(url: url) else {
+        return nil
+    }
+
+    return pdfDocument
+}
+
+
+
+
+/*
+var helpWindow: NSWindow?
+
+func showHelpTextWindow() {
+    let helpText = loadHelpText()
+    let helpView = HelpTextView(helpText: helpText)
+
+    let hostingController = NSHostingController(rootView: helpView)
+    helpWindow = NSWindow(
+        contentRect: NSRect(x: 0, y: 0, width: 600, height: 400),
+        styleMask: [.titled, .closable, .resizable],
+        backing: .buffered,
+        defer: false
+    )
+    helpWindow?.title = "Help"
+    helpWindow?.center()
+    helpWindow?.contentView = hostingController.view
+    helpWindow?.makeKeyAndOrderFront(nil)
+
+    // Avoid crash by keeping the window alive
+    helpWindow?.isReleasedWhenClosed = false
+}
+*/
+
+var helpWindow: NSWindow?
+
+func showHelpTextWindow() {
+    guard let pdfDocument = loadHelpDocument() else {
+        // Show an error message or fallback UI here
+        return
+    }
+
+    // Create a PDFView to display the PDF content
+    let pdfView = PDFView()
+    pdfView.document = pdfDocument
+    pdfView.autoScales = true  // Automatically scale the PDF to fit the view
+    pdfView.displayMode = .singlePage  // You can customize the view mode as needed
+    pdfView.translatesAutoresizingMaskIntoConstraints = false
+
+    // Create the window to display the PDF
+    helpWindow = NSWindow(
+        contentRect: NSRect(x: 0, y: 0, width: 600, height: 400),
+        styleMask: [.titled, .closable, .resizable],
+        backing: .buffered,
+        defer: false
+    )
+    helpWindow?.title = "Help"
+    helpWindow?.center()
+
+    // Add PDFView as the window's content
+    helpWindow?.contentView = pdfView
+    helpWindow?.makeKeyAndOrderFront(nil)
+
+    // Avoid crash by keeping the window alive
+    helpWindow?.isReleasedWhenClosed = false
+}
+
+
+

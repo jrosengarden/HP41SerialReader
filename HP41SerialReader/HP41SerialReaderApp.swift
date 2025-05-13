@@ -2,8 +2,9 @@
 //  HP41SerialReaderApp.swift
 //  HP41SerialReader
 //
-//  Created by Jeff Rosengarden on 5/12/25.
-//
+//  Created by Jeff Rosengarden on 5/13/25
+//  NOTE: This Xcode project was created with assistance from ChatGPT's AI engine
+//        (and it was VERY helpful for a couple of thorny problems I was having)
 
 //ToDos:
 //      1.  add debug setting feature for all the print statements that go to console
@@ -16,7 +17,7 @@
 //          b:  Construct the proper logic to match Diego & My logic re:rcv'd characters
 //      5.  Finish full debugging/testing cycle
 //      6.  Wrap it up and send it to Diego (TA-DA!)
-
+/*
 import SwiftUI
 
 @main
@@ -28,3 +29,25 @@ struct HP41SerialReaderApp: App {
         }
     }
 }
+*/
+
+import SwiftUI
+
+@main
+struct MyApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .background(WindowAccessor())
+        }
+        .commands {
+            CommandGroup(replacing: .help) {
+                Button("HP41SerialReader Help") {
+                    showHelpTextWindow()
+                }
+                .keyboardShortcut("?", modifiers: [.command, .shift])
+            }
+        }
+    }
+}
+
