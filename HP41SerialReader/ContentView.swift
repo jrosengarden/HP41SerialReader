@@ -235,24 +235,7 @@ struct HelpTextView: View {
         .frame(minWidth: 400, minHeight: 300)
     }
 }
-/*
-func loadHelpText() -> String {
-    guard let url = Bundle.main.url(forResource: "Read_Me_1st", withExtension: "pdf"),
-          let pdfDocument = PDFDocument(url: url) else {
-        return "Help file not found or unable to open PDF."
-    }
 
-    var fullText = ""
-    for pageIndex in 0..<pdfDocument.pageCount {
-        if let page = pdfDocument.page(at: pageIndex),
-           let pageContent = page.string {
-            fullText += pageContent + "\n"
-        }
-    }
-
-    return fullText.isEmpty ? "PDF is empty or could not extract text." : fullText
-}
-*/
 func loadHelpDocument() -> PDFDocument? {
     guard let url = Bundle.main.url(forResource: "Read_Me_1st", withExtension: "pdf"),
           let pdfDocument = PDFDocument(url: url) else {
@@ -263,32 +246,6 @@ func loadHelpDocument() -> PDFDocument? {
 }
 
 
-
-
-/*
-var helpWindow: NSWindow?
-
-func showHelpTextWindow() {
-    let helpText = loadHelpText()
-    let helpView = HelpTextView(helpText: helpText)
-
-    let hostingController = NSHostingController(rootView: helpView)
-    helpWindow = NSWindow(
-        contentRect: NSRect(x: 0, y: 0, width: 600, height: 400),
-        styleMask: [.titled, .closable, .resizable],
-        backing: .buffered,
-        defer: false
-    )
-    helpWindow?.title = "Help"
-    helpWindow?.center()
-    helpWindow?.contentView = hostingController.view
-    helpWindow?.makeKeyAndOrderFront(nil)
-
-    // Avoid crash by keeping the window alive
-    helpWindow?.isReleasedWhenClosed = false
-}
-*/
-
 var helpWindow: NSWindow?
 
 func showHelpTextWindow() {
@@ -296,31 +253,46 @@ func showHelpTextWindow() {
         // Show an error message or fallback UI here
         return
     }
-
+    
     // Create a PDFView to display the PDF content
     let pdfView = PDFView()
     pdfView.document = pdfDocument
     pdfView.autoScales = true  // Automatically scale the PDF to fit the view
     pdfView.displayMode = .singlePage  // You can customize the view mode as needed
     pdfView.translatesAutoresizingMaskIntoConstraints = false
-
-    // Create the window to display the PDF
-    helpWindow = NSWindow(
-        contentRect: NSRect(x: 0, y: 0, width: 600, height: 400),
-        styleMask: [.titled, .closable, .resizable],
-        backing: .buffered,
-        defer: false
-    )
-    helpWindow?.title = "Help"
-    helpWindow?.center()
-
-    // Add PDFView as the window's content
-    helpWindow?.contentView = pdfView
-    helpWindow?.makeKeyAndOrderFront(nil)
-
-    // Avoid crash by keeping the window alive
-    helpWindow?.isReleasedWhenClosed = false
+    
+  
+    // Determine the appropriate window size based on the screen size
+    if let screen = NSScreen.main {
+        let screenRect = screen.visibleFrame
+        
+        // Cap the window size to the screen dimensions (max 816x1152)
+        let windowWidth = min(816, screenRect.width)
+        let windowHeight = min(1152, screenRect.height)
+        
+        // Center the window on screen
+        let windowOriginX = screenRect.origin.x + (screenRect.width - windowWidth) / 2
+        let windowOriginY = screenRect.origin.y + (screenRect.height - windowHeight) / 2
+        
+        // Create the window to display the PDF
+        helpWindow = NSWindow(
+            contentRect: NSRect(x: windowOriginX, y: windowOriginY, width: windowWidth, height: windowHeight),
+            styleMask: [.titled, .closable, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        
+        helpWindow?.title = "HP41SerialReader Help"
+        
+        // Add PDFView as the window's content
+        helpWindow?.contentView = pdfView
+        helpWindow?.makeKeyAndOrderFront(nil)
+        
+        // Avoid crash by keeping the window alive
+        helpWindow?.isReleasedWhenClosed = false
+    }
 }
+    
 
 
 

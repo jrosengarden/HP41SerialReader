@@ -7,13 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		884F5DDF2DD3EA9B00688FAE /* Read_Me_1st.txt in Resources */ = {isa = PBXBuildFile; fileRef = 884F5DDE2DD3EA9B00688FAE /* Read_Me_1st.txt */; };
 		884F5DE12DD3EEC000688FAE /* Read_Me_1st.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 884F5DE02DD3EEC000688FAE /* Read_Me_1st.pdf */; };
 		885800522DD272C8001DB716 /* ORSSerial in Frameworks */ = {isa = PBXBuildFile; productRef = 885800512DD272C8001DB716 /* ORSSerial */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		884F5DDE2DD3EA9B00688FAE /* Read_Me_1st.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Read_Me_1st.txt; sourceTree = "<group>"; };
 		884F5DE02DD3EEC000688FAE /* Read_Me_1st.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Read_Me_1st.pdf; sourceTree = "<group>"; };
 		885800412DD27268001DB716 /* HP41SerialReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HP41SerialReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -42,7 +40,6 @@
 			isa = PBXGroup;
 			children = (
 				884F5DE02DD3EEC000688FAE /* Read_Me_1st.pdf */,
-				884F5DDE2DD3EA9B00688FAE /* Read_Me_1st.txt */,
 				885800432DD27268001DB716 /* HP41SerialReader */,
 				885800422DD27268001DB716 /* Products */,
 			);
@@ -125,7 +122,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				884F5DE12DD3EEC000688FAE /* Read_Me_1st.pdf in Resources */,
-				884F5DDF2DD3EA9B00688FAE /* Read_Me_1st.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
