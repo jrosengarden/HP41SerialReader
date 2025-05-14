@@ -1,9 +1,16 @@
+// APP: HP41SerialReader
 // HelpWindowManager.swift
+//
+//  Created by Jeff Rosengarden on 5/13/25
+//  NOTE: This Xcode project was created with assistance from ChatGPT's AI engine
+//        (and it was VERY helpful for a couple of thorny problems I was having)
+
+// Management of the Help window in the app's main menu bar
 
 import Cocoa
 import PDFKit
 
-// GlobalHelpFunctions.swift (or put this near the bottom of HelpWindowManager.swift)
+// GlobalHelpFunctions.swift for app's main menu "Help/HP41SerialPortReader Help" menu choice
 import Foundation
 
 func showHelpTextWindow() {
@@ -11,6 +18,7 @@ func showHelpTextWindow() {
 }
 
 
+// Manage/display help
 class HelpWindowManager {
     private static var helpWindow: NSWindow?
 
@@ -50,8 +58,8 @@ class HelpWindowManager {
         }
     }
 
+    // load the help document from the bundle resources
     private static func loadHelpDocument() -> PDFDocument? {
-        // Adjust this logic to match your actual help PDF location
         guard let url = Bundle.main.url(forResource: "Read_Me_1st", withExtension: "pdf") else {
             print("Error: Help PDF not found in bundle.")
             return nil

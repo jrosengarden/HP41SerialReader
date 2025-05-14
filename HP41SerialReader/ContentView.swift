@@ -1,3 +1,13 @@
+// APP: HP41SerialReader
+// ContentView.swift
+//
+//  Created by Jeff Rosengarden on 5/13/25
+//  NOTE: This Xcode project was created with assistance from ChatGPT's AI engine
+//        (and it was VERY helpful for a couple of thorny problems I was having)
+
+// Management of the main app window along with integration with
+// SerialPortManager.swift
+
 
 import SwiftUI
 import ORSSerial
@@ -109,7 +119,7 @@ struct ContentView: View {
             ScrollView {
                 Text(serialManager.receivedData.isEmpty ? "<No Data>" : serialManager.receivedData)
                     .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // ← important
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     .background(Color(NSColor.textBackgroundColor))
                     .cornerRadius(6)
                     .font(.system(.body, design: .monospaced))
@@ -127,7 +137,7 @@ struct ContentView: View {
                 .padding(.top, 10)
                 .buttonStyle(DefaultButtonStyle())
                 
-                Button("Copy Data") {
+                Button("Copy Data") {   // Copy data in scrollview to clipboard
                     copyToClipboard()
                 }
                 .padding(.top, 10)

@@ -1,3 +1,13 @@
+// APP: HP41SerialReader
+// SerialPortManager.swift
+//
+//  Created by Jeff Rosengarden on 5/13/25
+//  NOTE: This Xcode project was created with assistance from ChatGPT's AI engine
+//        (and it was VERY helpful for a couple of thorny problems I was having)
+
+//  Management of serial ports and communication with proper linkages
+//  between this class and ContentView
+
 import Foundation
 import ORSSerial
 
