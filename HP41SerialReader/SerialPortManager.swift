@@ -63,61 +63,56 @@ class SerialPortManager: NSObject, ObservableObject, ORSSerialPortDelegate {
 
     }
 
+
     
-    // main serial port receiving function.
-    // this function receives each data byte being sent by HP41 and then converts
-    // it to a plain integer.
+// main serial port receiving function.
+// this function receives each data byte being sent by HP41 and then converts
+// it to an asciiCharacter, a hex value and an intvalue.  All 3 versions of
+// the byte rec'd are needed for debugging info in the debug console.  The
+// only item really needed, after receiving the byte, is the intValue.
+// This version of serialPort(...) was modified to be platform agnostic regarding
+// serial port buffering.  For example: on an Intel Mac only 1 byte at a time is rec'd
+// However on M1 and M3 Apple Silicon Mac's multiple bytes at a time were being rec'd
+// in a chunk.  This function was re-written to be able to handle ANY data length
+// that is received!!!!
     func serialPort(_ serialPort: ORSSerialPort, didReceive data: Data) {
-        
-        if lineEndFlag {
-            lineEndFlag = false
-            HP41PrintLine = ""
-        }
-        
-        let string = String(decoding: data, as: Unicode.ASCII.self)
-        let byteString = data.map { String(format: "%02X", $0) }.joined(separator: " ")
-        
-        
-        // Deprecated: combined into a single line of code below
-        // Decode each byte as an integer (UInt8)
-        //let integerValues = data.map { Int($0) }  // Convert each byte to an integer (UInt8 to Int)
-        
-        // Integrated line of code that replaces the above deprecated line of code
-        // prior to combining 2 lines of code and deprecating the above line of code
-        // this line of code was:
-        //      let combinedInteger = integerValues.reduce(0) { ($0 << 8) + $1 }
-        // Decode each byte as an Int[array] and then convert Int[array] to plain integer
-        let combinedInteger = data.map { Int($0) }.reduce(0) { ($0 << 8) + $1 }
-        
-        print("Raw bytes: \(byteString) + ASCII Char: \(string) + Integer Value: \(combinedInteger)")
-        
-        if combinedInteger < 128 {
-            HP41PrintLine += getCharacter(at: combinedInteger) ?? ""
-        }
-        
-        if combinedInteger > 160 && combinedInteger < 184 {
-            HP41PrintLine += String(repeating: " ", count: combinedInteger - 160)
-        }
-        
-        if combinedInteger == 224 && HP41PrintLine != "" {
-            HP41PrintLine += "\n"
-            lineEndFlag = true
-        }
-        
-        if combinedInteger == 232 && HP41PrintLine != "" {
-            HP41PrintLine = String(repeating: " ", count: 24) + HP41PrintLine
-        }
-        
-        if lineEndFlag {
-            DispatchQueue.main.async {
-                self.receivedData += self.HP41PrintLine
+        for byte in data {
+            let asciiChar = String(decoding: Data([byte]), as: Unicode.ASCII.self)
+            let hexString = String(format: "%02X", byte)
+            let intValue = Int(byte)
+
+            print("Raw byte: \(hexString) + ASCII Char: \(asciiChar) + Integer Value: \(intValue)")
+
+            if lineEndFlag {
+                lineEndFlag = false
+                HP41PrintLine = ""
+            }
+
+            if intValue < 128 {
+                HP41PrintLine += getCharacter(at: intValue) ?? ""
+            }
+
+            if intValue > 160 && intValue < 184 {
+                HP41PrintLine += String(repeating: " ", count: intValue - 160)
+            }
+
+            if intValue == 224 && HP41PrintLine != "" {
+                HP41PrintLine += "\n"
+                lineEndFlag = true
+            }
+
+            if intValue == 232 && HP41PrintLine != "" {
+                HP41PrintLine = String(repeating: " ", count: 24) + HP41PrintLine
+            }
+
+            if lineEndFlag {
+                DispatchQueue.main.async {
+                    self.receivedData += self.HP41PrintLine
+                }
             }
         }
-
     }
 
-
-    
 
     func serialPortWasRemovedFromSystem(_ serialPort: ORSSerialPort) {
         print("⚠️ Serial port was removed from system.")
