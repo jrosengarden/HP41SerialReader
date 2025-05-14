@@ -7,28 +7,24 @@
 
 // Management of the main app window along with integration with
 // SerialPortManager.swift
-
-
+// ContentView.swift
+// HP41SerialReader
 import SwiftUI
 import ORSSerial
 import PDFKit
 
 struct ContentView: View {
     @StateObject private var serialManager = SerialPortManager()
-    
+
     @State private var availablePorts: [ORSSerialPort] = []
     @State private var selectedPort: ORSSerialPort? = nil
 
-    // set State & other comm variables and give them default values
     @State private var baudRate: String = "115200"
     @State private var stopBits: Int = 1
     @State private var dataBits: Int = 8
     @State private var paritySelection: String = "None"
 
-    // set standard parity options for UI picker
     let parityOptions = ["None", "Even", "Odd"]
-    
-    // set standard baud rates for UI picker
     let commonBaudRates = [
         300, 1200, 2400, 4800, 9600,
         14400, 19200, 38400, 57600,
@@ -39,17 +35,15 @@ struct ContentView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Serial Port Configuration:")
                 .font(.headline)
-            
-            // Picker to select serial port
+
             Picker("Serial Port", selection: $selectedPort) {
                 ForEach(availablePorts, id: \.self) { port in
                     Text("\(port.name) (\(port.path))").tag(port as ORSSerialPort?)
                 }
             }
             .pickerStyle(MenuPickerStyle())
-            
+
             HStack {
-                // Picker to select baud rate
                 Picker("Baud Rate", selection: $baudRate) {
                     ForEach(commonBaudRates, id: \.self) { rate in
                         Text("\(rate)").tag(String(rate))
@@ -57,65 +51,71 @@ struct ContentView: View {
                 }
                 .pickerStyle(MenuPickerStyle())
             }
-            
-            // Picker to select stop bits
+
             Picker("Stop Bits", selection: $stopBits) {
                 ForEach([1, 2], id: \.self) {
                     Text("\($0)")
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
-            
-            // Picker to select data bits
+
             Picker("Data Bits", selection: $dataBits) {
                 ForEach([5, 6, 7, 8], id: \.self) {
                     Text("\($0)")
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
-            
-            // Picker to select parity
+
             Picker("Parity", selection: $paritySelection) {
                 ForEach(parityOptions, id: \.self) {
                     Text($0)
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
-            
-            // "Connect" button to start communications w/HP41
-            Button("Connect") {
-                guard let port = selectedPort,
-                      let baud = Int(baudRate)
-                else {
-                    print("⚠️ Invalid input.")
-                    return
-                }
-                
-                let parity: ORSSerialPortParity = {
-                    switch paritySelection {
-                    case "Even": return .even
-                    case "Odd": return .odd
-                    default: return .none
+
+            // Connect + Disconnect buttons side-by-side
+            HStack {
+                Button(action: {
+                    guard let port = selectedPort,
+                          let baud = Int(baudRate)
+                    else {
+                        print("⚠️ Invalid input.")
+                        return
                     }
-                }()
-                
-                // actual comm connection construct
-                serialManager.connect(
-                    portPath: port.path,
-                    baudRate: baud,
-                    stopBits: stopBits,
-                    parity: parity,
-                    dataBits: dataBits
-                )
+
+                    let parity: ORSSerialPortParity = {
+                        switch paritySelection {
+                        case "Even": return .even
+                        case "Odd": return .odd
+                        default: return .none
+                        }
+                    }()
+
+                    serialManager.connect(
+                        portPath: port.path,
+                        baudRate: baud,
+                        stopBits: stopBits,
+                        parity: parity,
+                        dataBits: dataBits
+                    )
+                }) {
+                    Text("Connect")
+                        .foregroundColor(connectButtonColor)
+                }
+
+                Button(action: {
+                    disconnectSerialPort()
+                }) {
+                    Text("Disconnect")
+                }
             }
             .padding(.top, 10)
-            
+
             Divider().padding(.vertical, 10)
-            
-            // Set up "Received Data" scrollview box
+
             Text("Received Data:")
                 .font(.headline)
-            
+
             ScrollView {
                 Text(serialManager.receivedData.isEmpty ? "<No Data>" : serialManager.receivedData)
                     .padding()
@@ -124,99 +124,89 @@ struct ContentView: View {
                     .cornerRadius(6)
                     .font(.system(.body, design: .monospaced))
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // ← allow ScrollView to expand
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(NSColor.controlBackgroundColor))
-            
-            
-            // Setup all buttons in one HStack at bottom of app window
-            // HStack for all UI buttons
+
             HStack {
                 Button("Clear") {
-                    serialManager.receivedData = ""  // Clear the received data
+                    serialManager.receivedData = ""
                 }
                 .padding(.top, 10)
-                .buttonStyle(DefaultButtonStyle())
-                
-                Button("Copy Data") {   // Copy data in scrollview to clipboard
+
+                Button("Copy Data") {
                     copyToClipboard()
                 }
                 .padding(.top, 10)
-                .buttonStyle(DefaultButtonStyle())
-                
+
                 Button("Quit") {
-                    quitApp()  // Close the serial port and quit
+                    quitApp()
                 }
                 .padding(.top, 10)
-                .buttonStyle(DefaultButtonStyle())
-            
+
                 Spacer()
+
                 Button("Rescan Ports") {
-                    rescanPorts()  // Rescan ports when the user clicks
+                    rescanPorts()
                 }
-                .buttonStyle(DefaultButtonStyle())
-        }
-        .padding(.top, 10) // Optional: Add bottom padding for spacing from the bottom edge
-        Spacer()
+            }
+            .padding(.top, 10)
+
+            Spacer()
         }
         .padding()
         .onAppear {
-            // Scan system for all available serial ports
             let ports = ORSSerialPortManager.shared().availablePorts
             self.availablePorts = ports
 
-            // Try to set the default port to /dev/cu.usbserial-00301314"
-            // if it isn't available then just select the 1st available port
-            // as the default and let the user change it as needed.
             if let defaultPort = ports.first(where: { $0.path == "/dev/cu.usbserial-00301314" }) {
                 self.selectedPort = defaultPort
             } else {
-                self.selectedPort = ports.first // fallback to the first available port
+                self.selectedPort = ports.first
             }
         }
-
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-    
-    // Rescan the serial ports
-    // This function will help the user identify the comm port they are using
-    // If they look at the drop down BEFORE plugging in their HP41 via
-    // Diego Diaz's USB-41 interface and then look at the drop down AFTER
-    // plugging in the USB-41 interface they should be able to see the port
-    // that has been added (or dropped off...depending on what order they do this)
-    // This is the ENTIRE purpose of the "Rescan Ports" button
-      @MainActor
-      private func rescanPorts() {
-          let ports = ORSSerialPortManager.shared().availablePorts
-          availablePorts = ports
 
-          // After rescan try to set the default port to /dev/cu.usbserial-00301314"
-          // if it isn't available then just select the 1st available port
-          // as the default and let the user change it as needed.
-          if let defaultPort = ports.first(where: { $0.path == "/dev/cu.usbserial-00301314" }) {
-              self.selectedPort = defaultPort
-          } else {
-              self.selectedPort = ports.first // fallback to the first available port
-          }
-
-          print("🔄 Rescanned ports. Found: \(ports.map(\.path))")
-      }
-
-    // Function to copy the received data to the clipboard
-    private func copyToClipboard() {
-        let pasteboard = NSPasteboard.general
-        pasteboard.clearContents()  // Clear any existing contents
-        pasteboard.setString(serialManager.receivedData, forType: .string)  // Copy received data
+    private var connectButtonColor: Color {
+        if let success = serialManager.connectionSuccessful {
+            return success ? .green : .red
+        } else {
+            return .primary
+        }
     }
 
-    // Function to close the serial port and quit the app
+    @MainActor
+    private func rescanPorts() {
+        let ports = ORSSerialPortManager.shared().availablePorts
+        availablePorts = ports
+
+        if let defaultPort = ports.first(where: { $0.path == "/dev/cu.usbserial-00301314" }) {
+            self.selectedPort = defaultPort
+        } else {
+            self.selectedPort = ports.first
+        }
+
+        print("🔄 Rescanned ports. Found: \(ports.map(\.path))")
+    }
+
+    private func copyToClipboard() {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(serialManager.receivedData, forType: .string)
+    }
+
     private func quitApp() {
-        // Ensure the serial port is disconnected before quitting
-        serialManager.disconnect() 
-        NSApplication.shared.terminate(nil) // Terminate the app
+        serialManager.disconnect()
+        NSApplication.shared.terminate(nil)
+    }
+
+    private func disconnectSerialPort() {
+        serialManager.disconnect()
+        serialManager.connectionSuccessful = nil // Reset connect button color
     }
 }
 
-// struct to set window width & height
+
 struct WindowAccessor: NSViewRepresentable {
     func makeNSView(context: Context) -> NSView {
         let view = NSView()
