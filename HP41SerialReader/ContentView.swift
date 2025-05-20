@@ -12,6 +12,7 @@
 import SwiftUI
 import ORSSerial
 import PDFKit
+import UniformTypeIdentifiers // Add this import
 
 struct ContentView: View {
     @StateObject private var serialManager = SerialPortManager()
@@ -131,12 +132,20 @@ struct ContentView: View {
                 Button("Clear") {
                     serialManager.receivedData = ""
                 }
+                .disabled(serialManager.receivedData.isEmpty)  //disable button if no text
                 .padding(.top, 10)
 
                 Button("Copy Data") {
                     copyToClipboard()
                 }
+                .disabled(serialManager.receivedData.isEmpty)  //disable button if no text
                 .padding(.top, 10)
+                
+                Button("Save") {
+                    printToFile()
+                }
+                .disabled(serialManager.receivedData.isEmpty)  //disable button if no text
+                .padding(.top,10)
 
                 Button("Quit") {
                     quitApp()
@@ -204,6 +213,26 @@ struct ContentView: View {
         serialManager.disconnect()
         serialManager.connectionSuccessful = nil // Reset connect button color
     }
+    
+    private func printToFile() {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [UTType.plainText] // Use UTType.plainText instead of "txt"
+        panel.canCreateDirectories = true
+        panel.title = "Save Data As"
+        panel.nameFieldStringValue = "receivedData.txt"
+
+        if panel.runModal() == .OK {
+            if let url = panel.url {
+                do {
+                    try serialManager.receivedData.write(to: url, atomically: true, encoding: .utf8)
+                    print("Data saved to: \(url.path)")
+                } catch {
+                    print("Error saving file: \(error)")
+                }
+            }
+        }
+    }
+
 }
 
 
