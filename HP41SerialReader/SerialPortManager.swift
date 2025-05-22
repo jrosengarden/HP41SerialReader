@@ -6,7 +6,7 @@
 //        (and it was VERY helpful for a couple of thorny problems I was having)
 
 //  Management of serial ports and communication with proper linkages
-//  between this class and ContentView
+//  between this class and ContentView, AppDelegate, SerialSettings & SettingsView
 import Foundation
 import ORSSerial
 

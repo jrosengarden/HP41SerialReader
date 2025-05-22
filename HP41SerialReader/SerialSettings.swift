@@ -5,6 +5,9 @@
 //  Created by Jeff Rosengarden on 5/22/25.
 //
 
+//  New class to be used with SettingsView - all Serial Port settings now
+//  reachable only on app's Main Settings menu choice
+
 import SwiftUI
 import ORSSerial
 

@@ -5,7 +5,8 @@
 //  NOTE: This Xcode project was created with assistance from ChatGPT's AI engine
 //        (and it was VERY helpful for a couple of thorny problems I was having)
 
-// Main program to launch everything
+// Main program to launch everything as well as integrate the "Settings" and
+// "Help" main app menu choices
 
 import SwiftUI
 
@@ -41,9 +42,5 @@ struct MyApp: App {
             }
         }
 
-        // ❌ REMOVE THIS NON-MODAL SETTINGS BLOCK
-        // Settings {
-        //     SettingsView().environmentObject(serialSettings)
-        // }
     }
 }

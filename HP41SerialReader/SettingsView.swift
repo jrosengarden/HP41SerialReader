@@ -5,6 +5,8 @@
 //  Created by Jeff Rosengarden on 5/22/25.
 //
 
+//  Populate Settings Panel fields (and linkages to other classes as needed)
+
 // SettingsView.swift
 import SwiftUI
 import ORSSerial

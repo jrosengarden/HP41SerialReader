@@ -5,6 +5,9 @@
 //  Created by Jeff Rosengarden on 5/22/25.
 //
 
+//  Needed in order to move the Serial Port settings from the Main App's UI into
+//  a normal "Mac App" Settings menu pulldown.
+
 import AppKit
 
 class AppDelegate: NSObject, NSApplicationDelegate {
