@@ -7,15 +7,24 @@
 
 // Main program to launch everything
 
-
 import SwiftUI
 
 @main
 struct MyApp: App {
+    @StateObject private var serialSettings = SerialSettings()
+    @State private var showSettings = false  // ✅ new state variable
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(serialSettings)
                 .background(WindowAccessor())
+                .sheet(isPresented: $showSettings) {
+                    SettingsView(
+                        isPresented: $showSettings  // ✅ pass in binding
+                    )
+                    .environmentObject(serialSettings)
+                }
         }
         .commands {
             CommandGroup(replacing: .help) {
@@ -24,7 +33,17 @@ struct MyApp: App {
                 }
                 .keyboardShortcut("?", modifiers: [.command, .shift])
             }
+
+            CommandGroup(replacing: .appSettings) {
+                Button("Settings") {
+                    showSettings = true  // ✅ trigger modal
+                }
+            }
         }
+
+        // ❌ REMOVE THIS NON-MODAL SETTINGS BLOCK
+        // Settings {
+        //     SettingsView().environmentObject(serialSettings)
+        // }
     }
 }
-
