@@ -142,7 +142,13 @@ struct ContentView: View {
                 .padding(.top, 10)
                 
                 Button("Save") {
-                    printToFile()
+                    saveToFile()
+                }
+                .disabled(serialManager.receivedData.isEmpty)  //disable button if no text
+                .padding(.top,10)
+                
+                Button("Print") {
+                    sendToPrinter()
                 }
                 .disabled(serialManager.receivedData.isEmpty)  //disable button if no text
                 .padding(.top,10)
@@ -214,7 +220,26 @@ struct ContentView: View {
         serialManager.connectionSuccessful = nil // Reset connect button color
     }
     
-    private func printToFile() {
+    private func sendToPrinter() {
+        let printText = serialManager.receivedData
+
+        // Create an NSTextView and set its content
+        let textView = NSTextView(frame: NSRect(x: 0, y: 0, width: 500, height: 800))
+        textView.string = printText
+        textView.isEditable = false
+        textView.font = NSFont.userFixedPitchFont(ofSize: 12) ?? NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+
+        // Create the print operation
+        let printOperation = NSPrintOperation(view: textView)
+        printOperation.showsPrintPanel = true
+        printOperation.showsProgressPanel = true
+
+        // Run the print operation
+        printOperation.run()
+    }
+
+    
+    private func saveToFile() {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [UTType.plainText] // Use UTType.plainText instead of "txt"
         panel.canCreateDirectories = true
