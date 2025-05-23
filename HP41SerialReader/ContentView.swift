@@ -100,6 +100,11 @@ struct ContentView: View {
                     sendToPrinter()
                 }
                 .disabled(serialManager.receivedData.isEmpty)
+                
+                Button("eMail") {
+                    sendToEmail()
+                }
+                .disabled(serialManager.receivedData.isEmpty)
 
                 Button("Quit") {
                     quitApp()
@@ -166,6 +171,26 @@ struct ContentView: View {
         printOperation.showsProgressPanel = true
         printOperation.run()
     }
+    
+    private func sendToEmail() {
+        let receivedData = serialManager.receivedData
+
+        // Make sure there's something to send
+        guard !receivedData.isEmpty else {
+            print("⚠️ No data to email.")
+            return
+        }
+
+        // Use NSSharingService to compose an email
+        if let emailService = NSSharingService(named: .composeEmail) {
+            emailService.recipients = [] // You can pre-fill recipients if desired
+            emailService.subject = "HP41SerialReader Output"
+            emailService.perform(withItems: [receivedData])
+        } else {
+            print("⚠️ Email sharing service is not available.")
+        }
+    }
+
 
     private func saveToFile() {
         let panel = NSSavePanel()
