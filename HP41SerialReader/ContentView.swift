@@ -17,7 +17,6 @@ import UniformTypeIdentifiers
 
 struct ContentView: View {
     @StateObject private var serialManager = SerialPortManager()
-    //@StateObject private var settings = SerialSettings()
     @EnvironmentObject var settings: SerialSettings
     
     var body: some View {
@@ -183,7 +182,7 @@ struct ContentView: View {
 
         // Use NSSharingService to compose an email
         if let emailService = NSSharingService(named: .composeEmail) {
-            emailService.recipients = [] // You can pre-fill recipients if desired
+            emailService.recipients = []
             emailService.subject = "HP41SerialReader Output"
             emailService.perform(withItems: [receivedData])
         } else {
