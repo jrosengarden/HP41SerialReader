@@ -1,6 +1,5 @@
-//
+//  APP:HP41SerialReader
 //  SettingsView.swift
-//  HP41SerialReader
 //
 //  Created by Jeff Rosengarden on 5/22/25.
 //
@@ -67,11 +66,11 @@ struct SettingsView: View {
             HStack {
                 Spacer()
                 Button("Cancel") {
-                    isPresented = false  // ✅ dismiss without applying
+                    NSApp.keyWindow?.close()
                 }
                 Button("OK") {
                     applyChanges()
-                    isPresented = false  // ✅ dismiss after apply
+                    NSApp.keyWindow?.close()
                 }
                 .keyboardShortcut(.defaultAction)
             }

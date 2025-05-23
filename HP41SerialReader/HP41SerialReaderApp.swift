@@ -8,24 +8,20 @@
 // Main program to launch everything as well as integrate the "Settings" and
 // "Help" main app menu choices
 
+// 05/23/25: Updated to present Settings as a modal floating window using NSPanel
+
 import SwiftUI
 
 @main
 struct MyApp: App {
     @StateObject private var serialSettings = SerialSettings()
-    @State private var showSettings = false  // ✅ new state variable
+    private let settingsWindowController = SettingsWindowController()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(serialSettings)
                 .background(WindowAccessor())
-                .sheet(isPresented: $showSettings) {
-                    SettingsView(
-                        isPresented: $showSettings  // ✅ pass in binding
-                    )
-                    .environmentObject(serialSettings)
-                }
         }
         .commands {
             CommandGroup(replacing: .help) {
@@ -37,10 +33,9 @@ struct MyApp: App {
 
             CommandGroup(replacing: .appSettings) {
                 Button("Settings") {
-                    showSettings = true  // ✅ trigger modal
+                    settingsWindowController.showModal(settings: serialSettings)
                 }
             }
         }
-
     }
 }

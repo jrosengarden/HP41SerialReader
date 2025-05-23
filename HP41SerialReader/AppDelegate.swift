@@ -1,6 +1,5 @@
-//
+//  APP:HP41SerialReader
 //  AppDelegate.swift
-//  HP41SerialReader
 //
 //  Created by Jeff Rosengarden on 5/22/25.
 //
