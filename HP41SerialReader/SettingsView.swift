@@ -20,6 +20,7 @@ struct SettingsView: View {
     @State private var tempStopBits: Int = 1
     @State private var tempDataBits: Int = 8
     @State private var tempParitySelection: String = "None"
+    @State private var tempEnableDTR: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -61,6 +62,9 @@ struct SettingsView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
 
+            Toggle("Enable DTR (for TULIP4041)", isOn: $tempEnableDTR)
+                .help("Enable DTR line for TULIP4041 compatibility. Leave OFF for USB-41 interface.")
+
             Divider().padding(.vertical, 10)
 
             HStack {
@@ -83,6 +87,7 @@ struct SettingsView: View {
             tempStopBits = settings.stopBits
             tempDataBits = settings.dataBits
             tempParitySelection = settings.paritySelection
+            tempEnableDTR = settings.enableDTR
         }
     }
 
@@ -92,5 +97,6 @@ struct SettingsView: View {
         settings.stopBits = tempStopBits
         settings.dataBits = tempDataBits
         settings.paritySelection = tempParitySelection
+        settings.enableDTR = tempEnableDTR
     }
 }

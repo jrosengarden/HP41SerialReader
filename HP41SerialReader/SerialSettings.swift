@@ -18,6 +18,7 @@ class SerialSettings: ObservableObject {
     @Published var stopBits: Int = 1
     @Published var dataBits: Int = 8
     @Published var paritySelection: String = "None"
+    @Published var enableDTR: Bool = false  // Enable DTR for TULIP4041 compatibility
     
     let parityOptions = ["None", "Even", "Odd"]
     let commonBaudRates = [

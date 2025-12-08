@@ -26,7 +26,7 @@ struct ContentView: View {
                     guard let port = settings.selectedPort,
                           let baud = Int(settings.baudRate)
                     else {
-                        print("⚠️ Invalid input.")
+                        NSLog("⚠️ Invalid input.")
                         return
                     }
 
@@ -43,7 +43,8 @@ struct ContentView: View {
                         baudRate: baud,
                         stopBits: settings.stopBits,
                         parity: parity,
-                        dataBits: settings.dataBits
+                        dataBits: settings.dataBits,
+                        enableDTR: settings.enableDTR
                     )
                 }) {
                     Text("Connect")
@@ -68,20 +69,34 @@ struct ContentView: View {
             Text("Received Data:")
                 .font(.headline)
 
-            ScrollView {
-                Text(serialManager.receivedData.isEmpty ? "<No Data>" : serialManager.receivedData)
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                    .background(Color(NSColor.textBackgroundColor))
-                    .cornerRadius(6)
-                    .font(.system(.body, design: .monospaced))
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack {
+                        Text(serialManager.receivedData.isEmpty ? "<No Data>" : serialManager.receivedData)
+                            .padding()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                            .background(Color(NSColor.textBackgroundColor))
+                            .cornerRadius(6)
+                            .font(.system(.body, design: .monospaced))
+
+                        Color.clear
+                            .frame(height: 1)
+                            .id("bottom")
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(NSColor.controlBackgroundColor))
+                .onChange(of: serialManager.receivedData) { _ in
+                    withAnimation {
+                        proxy.scrollTo("bottom", anchor: .bottom)
+                    }
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(NSColor.controlBackgroundColor))
 
             HStack {
                 Button("Clear") {
                     serialManager.receivedData = ""
+                    serialManager.resetProgramListingMode()  // Reset for next printout
                 }
                 .disabled(serialManager.receivedData.isEmpty)
 
@@ -137,8 +152,6 @@ struct ContentView: View {
         } else {
             settings.selectedPort = ports.first
         }
-
-        print("🔄 Rescanned ports. Found: \(ports.map(\.path))")
     }
 
     private func copyToClipboard() {
@@ -176,7 +189,7 @@ struct ContentView: View {
 
         // Make sure there's something to send
         guard !receivedData.isEmpty else {
-            print("⚠️ No data to email.")
+            NSLog("⚠️ No data to email.")
             return
         }
 
@@ -186,7 +199,7 @@ struct ContentView: View {
             emailService.subject = "HP41SerialReader Output"
             emailService.perform(withItems: [receivedData])
         } else {
-            print("⚠️ Email sharing service is not available.")
+            NSLog("⚠️ Email sharing service is not available.")
         }
     }
 
@@ -202,9 +215,9 @@ struct ContentView: View {
             if let url = panel.url {
                 do {
                     try serialManager.receivedData.write(to: url, atomically: true, encoding: .utf8)
-                    print("Data saved to: \(url.path)")
+                    NSLog("Data saved to: %@", url.path)
                 } catch {
-                    print("Error saving file: \(error)")
+                    NSLog("Error saving file: %@", error.localizedDescription)
                 }
             }
         }
