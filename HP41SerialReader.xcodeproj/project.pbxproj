@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8852BD4D2DD4F68C00EEEBFB /* Read_Me_1st.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8852BD4C2DD4F68C00EEEBFB /* Read_Me_1st.pdf */; };
 		885800522DD272C8001DB716 /* ORSSerial in Frameworks */ = {isa = PBXBuildFile; productRef = 885800512DD272C8001DB716 /* ORSSerial */; };
+		8882898C2EE7A454007474F9 /* Read_Me_1st.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8882898B2EE7A454007474F9 /* Read_Me_1st.pdf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8852BD4C2DD4F68C00EEEBFB /* Read_Me_1st.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Read_Me_1st.pdf; sourceTree = "<group>"; };
 		885800412DD27268001DB716 /* HP41SerialReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HP41SerialReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8882898B2EE7A454007474F9 /* Read_Me_1st.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Read_Me_1st.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -39,9 +39,9 @@
 		885800382DD27268001DB716 = {
 			isa = PBXGroup;
 			children = (
-				8852BD4C2DD4F68C00EEEBFB /* Read_Me_1st.pdf */,
 				885800432DD27268001DB716 /* HP41SerialReader */,
 				885800422DD27268001DB716 /* Products */,
+				8882898B2EE7A454007474F9 /* Read_Me_1st.pdf */,
 			);
 			sourceTree = "<group>";
 		};
@@ -121,7 +121,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8852BD4D2DD4F68C00EEEBFB /* Read_Me_1st.pdf in Resources */,
+				8882898C2EE7A454007474F9 /* Read_Me_1st.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,7 +266,7 @@
 				CODE_SIGN_ENTITLEMENTS = HP41SerialReader/HP41SerialReader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3.31;
+				CURRENT_PROJECT_VERSION = 4.40;
 				DEVELOPMENT_TEAM = 8KW4KF38JB;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -277,7 +277,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 3.31;
+				MARKETING_VERSION = 4.00;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rosengarden.HP41SerialReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -294,7 +294,7 @@
 				CODE_SIGN_ENTITLEMENTS = HP41SerialReader/HP41SerialReader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3.31;
+				CURRENT_PROJECT_VERSION = 4.40;
 				DEVELOPMENT_TEAM = 8KW4KF38JB;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -305,7 +305,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 3.31;
+				MARKETING_VERSION = 4.00;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rosengarden.HP41SerialReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
