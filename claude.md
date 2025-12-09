@@ -4,18 +4,22 @@
 December 8, 2025
 
 ## Overview
-Added support for the TULIP4041 serial interface device while maintaining full backward compatibility with Diego Diaz's USB-41 interface. All TULIP4041-specific features are conditional on a new DTR toggle setting.
+Added support for the TULIP4041 serial interface device while maintaining full backward 
+compatibility with Diego Diaz's USB-41 interface. All TULIP4041-specific features are 
+conditional on a new DTR toggle setting.
 
 ## Changes Made
 
 ### 1. DTR (Data Terminal Ready) Support
-**Files Modified:** `SerialSettings.swift`, `SettingsView.swift`, `SerialPortManager.swift`, `ContentView.swift`
+**Files Modified:** `SerialSettings.swift`, `SettingsView.swift`, 
+`SerialPortManager.swift`, `ContentView.swift`
 
 - Added `enableDTR` boolean property to `SerialSettings` (default: false)
 - Added toggle control in Settings UI: "Enable DTR (for TULIP4041)"
 - Modified `connect()` function to accept `enableDTR` parameter
 - When DTR is enabled, sets `port.dtr = true` for TULIP4041 compatibility
-- Explicitly disables hardware flow control (both DTR/DSR and RTS/CTS) as TULIP4041 needs DTR line enabled but not flow control
+- Explicitly disables hardware flow control (both DTR/DSR and RTS/CTS) as TULIP4041 
+	needs DTR line enabled but not flow control
 - Stored DTR setting in `dtrEnabled` flag for use in data processing
 
 ### 2. Right-Justified Line Handling (Byte 232/0xE8)
@@ -57,12 +61,14 @@ Added intelligent line numbering that:
 
 **Variables Added:**
 - `currentLineNumber`: Tracks the current line number in program listing
-- `inProgramListingMode`: Boolean flag indicating if currently processing a program listing
+- `inProgramListingMode`: Boolean flag indicating if currently processing a 
+	program listing
 
 ### 5. Smart Mode Detection
 **File Modified:** `SerialPortManager.swift`
 
-Added `detectProgramListingMode()` function that analyzes each line to determine printout type:
+Added `detectProgramListingMode()` function that analyzes each line to determine 
+	printout type:
 
 **Enables Program Listing Mode:**
 - When line starts with "PRP" or "LIST"
@@ -128,17 +134,17 @@ Implemented automatic scrolling to keep latest data visible:
    - `addLineNumberIfNeeded()` increments counter and adds number
    - Output: ` 03 SF 00\n`
 
-### Compatibility Matrix
+### Compatibility Matrix of features added in Dec 8th, 2025 session
 
-| Feature | USB-41 (DTR OFF) | TULIP4041 (DTR ON) |
-|---------|------------------|---------------------|
-| DTR Line | Not enabled | Enabled |
-| Hardware Flow Control | Disabled | Disabled |
-| E8 (232) Right-justify | 24 spaces prepended | Pad to 24 chars + newline |
-| A2 (162) Separator | Add spaces | Line break |
-| Line Numbering | None | Auto for program listings |
-| Mode Detection | Not active | PRP/LIST vs PRFLAGS/etc |
-| Auto-scrolling | Yes | Yes |
+| Feature                    | USB-41 (DTR OFF)    | TULIP4041 (DTR ON)        |
+|----------------------------|---------------------|---------------------------|
+| DTR Line                   | Not enabled         | Enabled                   |
+| Hardware Flow Control      | Disabled            | Disabled                  |
+| E8 (232) Right-justify     | 24 spaces prepended | Pad to 24 chars + newline |
+| A2 (162) Separator         | Add spaces          | Line break                |
+| Line Numbering             | None                | Auto for program listings |
+| Mode Detection             | Not active          | PRP/LIST vs PRFLAGS/etc   |
+| Auto-scrolling             | Yes                 | Yes                       |
 
 ## Files Modified
 
