@@ -197,6 +197,7 @@ Implemented automatic scrolling to keep latest data visible:
 1. Investigate and resolve occasional data jumbling
 2. Consider adding user preference for auto-scrolling on/off
 3. Add visual indicator in UI showing which mode (USB-41 vs TULIP4041) is active
+4. Resolve deprecation warning in ContentView.swift
 
 ## Notes
 
